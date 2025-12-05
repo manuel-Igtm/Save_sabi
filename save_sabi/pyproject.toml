@@ -1,0 +1,68 @@
+[project]
+name = "save-sabi"
+version = "0.1.0"
+description = "Smart savings platform implementing the Hara Hachi Bu 80/20 principle"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "save_sabi.settings"
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-v --tb=short --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["core"]
+branch = true
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.venv
+    | migrations
+    | __pycache__
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip = [".venv", "migrations"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+extraPaths = ["."]
+
+[[tool.pyright.executionEnvironments]]
+root = "."
+extraPaths = [".venv/lib/python3.10/site-packages"]
+
+[tool.mypy]
+python_version = "3.10"
+plugins = ["mypy_django_plugin.main"]
+ignore_missing_imports = true
+strict = false
+
+[tool.django-stubs]
+django_settings_module = "save_sabi.settings"

@@ -1,0 +1,66 @@
+# Ignore git
+.git
+.gitignore
+.gitattributes
+
+# Ignore Docker files
+Dockerfile
+docker-compose*.yml
+.docker
+
+# Ignore docs
+docs/
+*.md
+LICENSE
+
+# Ignore IDE/editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore test files
+tests/
+*.test.py
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Ignore virtual environments
+.env
+.venv/
+venv/
+env/
+
+# Ignore Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Ignore local data
+*.sqlite3
+*.log
+*.pid
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore CI/CD
+.github/
+.gitlab-ci.yml
+.circleci/
+Makefile
+
+# Ignore development configs
+*.local.py
+pytest.ini
+setup.cfg
+mypy.ini
+.flake8
+.pre-commit-config.yaml
