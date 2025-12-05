@@ -1,0 +1,22 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored by default
+
+# REQUIRED: Your GCP Project ID
+project_id   = "your-gcp-project-id"
+
+# GCP Region and Zone
+region       = "us-central1"
+zone         = "us-central1-a"
+
+# Environment (dev, staging, prod)
+environment  = "dev"
+
+# Project Name
+project_name = "save-sabi"
+
+# Cloud SQL Configuration
+# For production, consider using db-n1-standard-1 or higher
+cloudsql_tier                  = "db-f1-micro"
+cloudsql_disk_size             = 10
+cloudsql_deletion_protection   = false  # Set to true for production
+cloudsql_availability_type     = "ZONAL"  # Use "REGIONAL" for production high availability
