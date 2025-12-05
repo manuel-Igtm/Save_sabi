@@ -1,0 +1,121 @@
+# =============================================
+# Save Sabi Docker Compose
+# Local development environment
+# =============================================
+
+version: '3.8'
+
+services:
+  # Django Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: save_sabi_web
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=dev-secret-key-not-for-production
+      - DATABASE_URL=postgres://savesabi:savesabi@db:5432/savesabi
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - ALLOWED_HOSTS=localhost,127.0.0.1,web
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - save_sabi_network
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: save_sabi_db
+    environment:
+      - POSTGRES_USER=savesabi
+      - POSTGRES_PASSWORD=savesabi
+      - POSTGRES_DB=savesabi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U savesabi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - save_sabi_network
+
+  # Redis for Celery
+  redis:
+    image: redis:7-alpine
+    container_name: save_sabi_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - save_sabi_network
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: save_sabi_celery_worker
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=dev-secret-key-not-for-production
+      - DATABASE_URL=postgres://savesabi:savesabi@db:5432/savesabi
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+    command: celery -A save_sabi worker -l info
+    networks:
+      - save_sabi_network
+
+  # Celery Beat (Scheduler)
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: save_sabi_celery_beat
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=dev-secret-key-not-for-production
+      - DATABASE_URL=postgres://savesabi:savesabi@db:5432/savesabi
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+    command: celery -A save_sabi beat -l info
+    networks:
+      - save_sabi_network
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+
+networks:
+  save_sabi_network:
+    driver: bridge
