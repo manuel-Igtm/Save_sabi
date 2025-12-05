@@ -100,17 +100,6 @@ resource "google_cloud_run_service" "backend" {
           period_seconds        = 30
         }
       }
-
-      # Cloud SQL connection
-      dynamic "volumes" {
-        for_each = var.cloudsql_connection != "" ? [1] : []
-        content {
-          name = "cloudsql"
-          cloud_sql_instance {
-            instances = [var.cloudsql_connection]
-          }
-        }
-      }
     }
 
     metadata {

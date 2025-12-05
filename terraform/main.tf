@@ -90,7 +90,7 @@ module "cloudrun" {
   database_url_secret_id  = module.secrets.database_url_id
 
   # Cloud SQL
-  cloudsql_connection = module.cloudsql.connection_name
+  cloudsql_connection = module.cloudsql.instance_connection_name
 
   # Public access
   allow_unauthenticated = true
