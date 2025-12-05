@@ -75,3 +75,23 @@ output "gcs_bucket_secret_id" {
   value       = module.secrets.gcs_bucket_name_id
 }
 
+# Cloud Run Outputs
+output "backend_url" {
+  description = "URL of the deployed backend API"
+  value       = module.cloudrun.service_url
+}
+
+output "backend_service_name" {
+  description = "Name of the Cloud Run service"
+  value       = module.cloudrun.service_name
+}
+
+output "backend_service_account" {
+  description = "Service account email for Cloud Run"
+  value       = module.cloudrun.service_account_email
+}
+
+output "backend_latest_revision" {
+  description = "Latest revision of the Cloud Run service"
+  value       = module.cloudrun.latest_revision
+}

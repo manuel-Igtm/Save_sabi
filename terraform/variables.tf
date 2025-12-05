@@ -52,3 +52,40 @@ variable "cloudsql_availability_type" {
   default     = "ZONAL"
 }
 
+# Cloud Run Configuration
+variable "backend_image" {
+  description = "Docker image for backend (e.g., gcr.io/project/image:tag)"
+  type        = string
+  default     = "gcr.io/cloudrun/hello"  # Placeholder, will be updated during deployment
+}
+
+variable "cloudrun_cpu" {
+  description = "CPU limit for Cloud Run"
+  type        = string
+  default     = "1000m"
+}
+
+variable "cloudrun_memory" {
+  description = "Memory limit for Cloud Run"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "cloudrun_min_instances" {
+  description = "Minimum number of Cloud Run instances"
+  type        = string
+  default     = "0"
+}
+
+variable "cloudrun_max_instances" {
+  description = "Maximum number of Cloud Run instances"
+  type        = string
+  default     = "10"
+}
+
+# Frontend Configuration
+variable "frontend_url" {
+  description = "Frontend URL for CORS configuration"
+  type        = string
+  default     = "http://localhost:5173"
+}
